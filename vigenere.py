@@ -1,3 +1,5 @@
+from kasiski import *
+
 class Vigenere:
 
     def test(self, key):
@@ -11,10 +13,17 @@ class Vigenere:
         # Additionally, make key same length as plaintext if key is longer
         self.key = ''.join(filter(str.isalpha, k)).upper()[0:len(self.plain)]
         self.cipher = encrypt(self.plain, self.key)
+        self.ngrams = {}
+        # Adds dictionary entries for bigrams to 6-grams
+        for x in range(2, 7):
+            tmp = ngrams(self.cipher, x)
+            if tmp:
+                self.ngrams[x] = tmp
+
 
     def __str__(self):
+        # Change this to something better
         return("The plaintext \"%s\" was encrypted using the keyword \"%s\" to create the cipher text \"%s\"" % (self.plain, self.key, self.cipher))
-
 
 def encrypt(p, k):
     # Creating the key stream
@@ -25,7 +34,7 @@ def encrypt(p, k):
         c += chr((ord(p[x]) + ord(k[x])) % 26 + 65)
     return(c)
 
-def decypt(c, k):
+def decrypt(c, k):
     # Creating the key stream
     k = k.upper() * int(len(c) / len(k)) + k[0:len(c) % len(k)]
     p = ''; c=c.upper()
@@ -33,4 +42,3 @@ def decypt(c, k):
     for x in range(0, len(c)):
         p += chr((ord(c[x]) - ord(k[x])) % 26 + 65)
     return(p)
-
