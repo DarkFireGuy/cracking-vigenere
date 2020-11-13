@@ -8,12 +8,9 @@ def ngrams(c, n):
                 output[gram] += 1
             else:
                 output[gram] = 1
-
         # Clean output (remove all single occurrences)
         for z in [key for key, val in output.items() if val == 1]:
             output.pop(z)
-
         # Sort output
         output = {k: v for k, v in sorted(output.items(), key=lambda item: item[1])}
-
     return output
