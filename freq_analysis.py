@@ -44,8 +44,6 @@ def _plot(fname: str,
           sort: bool = False,
           figsize: tuple = (12, 9),
           dpi: int = 300):
-
-
     frq = freqs(alphabet, fname)
 
     if sort:
@@ -78,4 +76,16 @@ def _plot(fname: str,
     plt.xticks(list(keys))
     plt.legend(bbox_to_anchor=(1, 1), loc="upper right", borderaxespad=0.)
 
+    # Rename file if it does not contain an extension
+    output, fext = os.path.splitext(output)
+    if not fext:
+        simple_popup(message="The file name you have chosen does not contain an extension",
+                     f1=lambda: exec("fext = str(input(\"New extension: \"))"),
+                     option1="Enter new name",
+                     option2="Save without extension"
+                     )
+    output = output+fext
+    print(output)
+
+    output = safe_fname(output)
     plt.savefig(output, bbox_inches='tight')
