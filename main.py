@@ -1,9 +1,8 @@
-from vigenere import *
-# import kasiski as ksk
-# import ioc_friedman as ioc
-import freq_analysis as frq
-from tools import *
+import friedman as frd
+import vigenere as vgn
+
+print(frd.ioc("bee.txt"))
+print(frd.ioc("bee_ciphered.txt"))
 
 
-fencrypt("bee.txt", "BEEMOVIEISAMEME")
-frq.plot_alpha("bee_ciphered.txt", "bee_ciphered.png", False)
+

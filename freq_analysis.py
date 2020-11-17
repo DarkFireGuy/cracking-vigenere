@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import string
-import tkinter as tk
 from tkinter import messagebox
 from tools import *
 
@@ -46,7 +45,6 @@ def _plot(fname: str,
           sort: bool = False,
           figsize: tuple = (12, 9),
           dpi: int = 300):
-
     output, ext = os.path.splitext(output)
     root = tk.Tk()
     root.withdraw()
@@ -55,8 +53,6 @@ def _plot(fname: str,
     if not ext:
         ext = ".png"
     output = output + ext
-
-
 
     frq = freqs(alphabet, fname)
 

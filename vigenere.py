@@ -2,12 +2,11 @@ from kasiski import *
 import os.path
 from tools import *
 
+
 class Vigenere:
 
     def test(self, key):
-        if ''.join(filter(str.isalpha, key)).upper() != self.key:
-            return False
-        return True
+        return ''.join(filter(str.isalpha, key)).upper() == self.key
 
     def __init__(self, p, k):
         # Remove all non alphabetic characters and make them both upper case
@@ -26,58 +25,56 @@ class Vigenere:
 
     def __str__(self):
         # Change this to something better
-        return("The plaintext \"%s\" was encrypted using the keyword \"%s\" to create the cipher text \"%s\"" %
-               (self.plain, self.key, self.cipher))
+        return ("The plaintext \"%s\" was encrypted using the keyword \"%s\" to create the cipher text \"%s\"" %
+                (self.plain, self.key, self.cipher))
 
 
-def encrypt(p, k):
-    # Creating the key stream
-    tmp = k.upper()
-    k = ''
+def _v_enc_dec(inp, key, i):
+    key = ''.join(filter(str.isalpha, key)).upper()
+    # Creating the key stream (match plain's punctuation)
+    tmp = key.upper()
+    key = ''
     n = 0
-    for x in p:
+    for x in inp:
         if str.isalpha(x):
-            k += tmp[n % len(tmp)]
+            key += tmp[n % len(tmp)]
             n += 1
         else:
-            k += x
-    c = ''
-    # For each character in the plain text calculate the corresponding ciphertext character
-    for x in range(0, len(p)):
-        if str.isalpha(p[x]):
-            tmp = chr((ord(p[x].upper()) + ord(k[x])) % 26 + 65)
-            if p[x].islower():
-                c += tmp.lower()
+            key += x
+    out = ''
+    # Create output
+    for x in range(0, len(inp)):
+        # Only modify letters
+        if str.isalpha(inp[x]):
+            tmp = chr((ord(inp[x].upper()) + ord(key[x]) * i) % 26 + 65)
+            # Make output match input's case
+            if inp[x].islower():
+                out += tmp.lower()
             else:
-                c += tmp.upper()
+                out += tmp.upper()
+        # Append any non letter without modification
         else:
-            c += p[x]
-    return c
+            out += inp[x]
+    return out
 
 
-def decrypt(c, k):
-    # Creating the key stream
-    tmp = k.upper()
-    k = ''
-    n = 0
-    for x in c:
-        if str.isalpha(x):
-            k += tmp[n % len(tmp)]
-            n += 1
-        else:
-            k += x
-    p = ''
-    # For each character in the plain text calculate the corresponding ciphertext character
-    for x in range(0, len(c)):
-        if str.isalpha(c[x]):
-            tmp = chr((ord(c[x].upper()) - ord(k[x])) % 26 + 65)
-            if c[x].islower():
-                p += tmp.lower()
-            else:
-                p += tmp.upper()
-        else:
-            p += c[x]
-    return p
+def encrypt(plain, key):
+    # USAGE:
+    # Plain: I like poo . poo. <3
+    # Key: mElO
+    # KeyStream: M ELOM ELO . MEL. <3
+    # Cipher: U ptyq tzc . bsz. <3
+
+    return _v_enc_dec(plain, key, 1)
+
+
+def decrypt(cipher, key):
+    # USAGE:
+    # Cipher: U ptyq tzc . bsz. <3
+    # Key: mElO
+    # KeyStream: M ELOM ELO . MEL. <3
+    # Plain: I like poo . poo. <3
+    return _v_enc_dec(cipher, key, -1)
 
 
 def fencrypt(fname, key):
@@ -94,5 +91,3 @@ def fdecrypt(fname, key):
     with open(fname, "r") as file, open(oname, "w") as output:
         output.write(decrypt(file.read(), key))
     return True
-
-
