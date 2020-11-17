@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import string
+import tkinter as tk
+from tkinter import messagebox
 from tools import *
 
 
@@ -29,7 +31,7 @@ def plot_printable(fname: str,
 
 def freqs(alphabet: str, fname: str):
     frq = dict.fromkeys(list(alphabet), 0)
-    with open(fname) as file:
+    with open(fname, "r") as file:
         for line in file:
             for char in line:
                 char = char.upper()
@@ -44,6 +46,18 @@ def _plot(fname: str,
           sort: bool = False,
           figsize: tuple = (12, 9),
           dpi: int = 300):
+
+    output, ext = os.path.splitext(output)
+    root = tk.Tk()
+    root.withdraw()
+    while not ext and not messagebox.askyesno("Missing Extension", "Save with default extension [png]?"):
+        ext = "." + str(input("Submit new extension: ")).lstrip(".")
+    if not ext:
+        ext = ".png"
+    output = output + ext
+
+
+
     frq = freqs(alphabet, fname)
 
     if sort:
@@ -76,16 +90,7 @@ def _plot(fname: str,
     plt.xticks(list(keys))
     plt.legend(bbox_to_anchor=(1, 1), loc="upper right", borderaxespad=0.)
 
-    # Rename file if it does not contain an extension
-    output, fext = os.path.splitext(output)
-    if not fext:
-        simple_popup(message="The file name you have chosen does not contain an extension",
-                     f1=lambda: exec("fext = str(input(\"New extension: \"))"),
-                     option1="Enter new name",
-                     option2="Save without extension"
-                     )
-    output = output+fext
-    print(output)
-
     output = safe_fname(output)
     plt.savefig(output, bbox_inches='tight')
+
+    root.mainloop()

@@ -36,11 +36,9 @@ def simple_popup(message="Error",
                  f2=lambda: True,
                  option1: str = "Yes",
                  option2: str = "No"):
-
     def func1():
         f1()
         popup.quit()
-
 
     def func2():
         f2()
