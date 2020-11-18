@@ -1,6 +1,5 @@
-from kasiski import *
+from scripts import kasiski, DFGTools
 import os.path
-from tools import *
 
 
 class Vigenere:
@@ -19,7 +18,7 @@ class Vigenere:
         self.ngrams = {}
         # Adds dictionary entries for trigrams to 6-grams
         for x in range(3, 7):
-            tmp = ngrams(self.cipher, x)
+            tmp = kasiski.ngrams(self.cipher, x)
             if tmp:
                 self.ngrams[x] = tmp
 
@@ -79,7 +78,7 @@ def decrypt(cipher, key):
 
 def fencrypt(fname, key):
     key = ''.join(filter(str.isalpha, key)).upper()
-    oname = safe_fname("_ciphered".join(os.path.splitext(fname)))
+    oname = DFGTools.safe_fname("_ciphered".join(os.path.splitext(fname)))
     with open(fname, "r") as file, open(oname, "w") as output:
         output.write(encrypt(file.read(), key))
     return True
@@ -87,7 +86,12 @@ def fencrypt(fname, key):
 
 def fdecrypt(fname, key):
     key = ''.join(filter(str.isalpha, key)).upper()
-    oname = safe_fname("_decrypted".join(os.path.splitext(fname)))
+    oname = DFGTools.safe_fname("_decrypted".join(os.path.splitext(fname)))
     with open(fname, "r") as file, open(oname, "w") as output:
         output.write(decrypt(file.read(), key))
     return True
+
+
+def stylize(inp, length):
+    inp = ''.join(filter(str.isalpha, inp)).upper()
+    return ' '.join(inp[i:i + length] for i in range(0, len(inp), length))

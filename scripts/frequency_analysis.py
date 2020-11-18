@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import string
-from tkinter import messagebox
-from tools import *
+import os.path
+from scripts import DFGTools
 
 
 def plot_alpha(fname: str,
@@ -28,14 +28,12 @@ def plot_printable(fname: str,
     _plot(fname=fname, alphabet=alphabet, output=output, sort=sort, figsize=figsize, dpi=dpi)
 
 
-def freqs(alphabet: str, fname: str):
+def freqs(alphabet: str, text: str):
     frq = dict.fromkeys(list(alphabet), 0)
-    with open(fname, "r") as file:
-        for line in file:
-            for char in line:
-                char = char.upper()
-                if char in frq:
-                    frq[char] += 1
+    for i in range(0, len(text)):
+        char = text[i]
+        if char in frq:
+            frq[char] += 1
     return frq
 
 
@@ -46,18 +44,12 @@ def _plot(fname: str,
           figsize: tuple = (12, 9),
           dpi: int = 300):
     output, ext = os.path.splitext(output)
-    root = tk.Tk()
-    root.withdraw()
-    while not ext and not messagebox.askyesno("Missing Extension", "Save with default extension [png]?"):
-        ext = "." + str(input("Submit new extension: ")).lstrip(".")
-    if not ext:
-        ext = ".png"
     output = output + ext
 
-    frq = freqs(alphabet, fname)
+    frq = freqs(alphabet, open(fname).read())
 
     if sort:
-        frq = sort_dict(frq)
+        frq = DFGTools.sort_dict(frq)
 
     keys, vals = frq.keys(), frq.values()
 
@@ -86,7 +78,5 @@ def _plot(fname: str,
     plt.xticks(list(keys))
     plt.legend(bbox_to_anchor=(1, 1), loc="upper right", borderaxespad=0.)
 
-    output = safe_fname(output)
+    output = DFGTools.safe_fname(output)
     plt.savefig(output, bbox_inches='tight')
-
-    root.mainloop()

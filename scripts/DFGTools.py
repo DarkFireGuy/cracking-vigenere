@@ -1,4 +1,3 @@
-import glob
 import os.path
 import tkinter as tk
 
@@ -55,8 +54,10 @@ def simple_popup(message="Error",
     popup.mainloop()
 
 
-def simple_input(message="Input",
-                 func1=lambda: True,
-                 option1: str = "Ok"):
-    popup = tk.Tk()
-    popup.title(message)
+def only_alpha(text):
+    return ''.join(filter(str.isalpha, text)).upper()
+
+
+def cipher_stylize(inp, length):
+    inp = ''.join(filter(str.isalpha, inp)).upper()
+    return ' '.join(inp[i:i + length] for i in range(0, len(inp), length))
