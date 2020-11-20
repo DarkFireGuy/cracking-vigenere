@@ -151,7 +151,7 @@ double chi_square_statistic(std::string text) {
     return chi_square;
 }
 std::string chi_square_bruteforce(std::string text, int key_length) {
-    char key[key_length]{};
+    std::string key{};
     std::string splits[key_length]{};
     split(text, key_length, splits);
     for(int i=0; i<key_length; i++) {
@@ -164,7 +164,7 @@ std::string chi_square_bruteforce(std::string text, int key_length) {
                 min_score = current_chi_square;
             }
         }
-        key[i] = min_char;
+        key += min_char;
     }
     return std::string(key);
 
